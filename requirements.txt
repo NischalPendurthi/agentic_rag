@@ -1,0 +1,10 @@
+faiss-cpu
+sentence-transformers
+langchain
+transformers
+peft
+fastapi
+uvicorn
+requests
+sympy
+sqlite3

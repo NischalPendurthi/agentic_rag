@@ -1,0 +1,33 @@
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import LoraConfig, get_peft_model
+from datasets import load_dataset
+
+# Load base model and tokenizer
+model = AutoModelForCausalLM.from_pretrained("gpt2")
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+tokenizer.pad_token = tokenizer.eos_token
+
+# Define LoRA config
+lora_config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=["c_attn"],
+    lora_dropout=0.1,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+# Apply LoRA
+model = get_peft_model(model, lora_config)
+
+# Load dataset (replace with your data)
+dataset = load_dataset("text", data_files={"train": "your_data.txt"})
+
+# Tokenize dataset
+def tokenize_function(examples):
+    return tokenizer(examples["text"], padding="max_length", truncation=True)
+
+tokenized_dataset = dataset.map(tokenize_function, batched=True)
+
+# Training loop (simplified)
+# Add your training code here using PyTorch or Hugging Face Trainer
